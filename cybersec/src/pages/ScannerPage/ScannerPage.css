@@ -1,0 +1,36 @@
+.scanner-page {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.qr-scanner-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.scanner-frame {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.5);
+}
+
+.question-container,
+.result-container {
+  padding: 1rem 0;
+}
