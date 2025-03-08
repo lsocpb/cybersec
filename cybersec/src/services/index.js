@@ -38,6 +38,15 @@ export const sessionAnswer = async (authorization, answer, scanId) => {
   return response.data;
 };
 
+export const sessionResults = async (authorization) => {
+  const response = await api.get("/session", {
+    headers: {
+      Authorization: authorization,
+    },
+  });
+  return response.data;
+}
+
 export default {
   sessionCreate,
   sessionScan,

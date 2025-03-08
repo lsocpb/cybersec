@@ -13,17 +13,36 @@ import ScannerPage from "./pages/ScannerPage/ScannerPage";
 import { ProtectedRoute } from "@/Components";
 
 function App() {
+  const isAuthenticated = localStorage.getItem("authToken") !== null;
+
   return (
     <Router>
       <Header />
       <Routes>
-        <Route path="/auth" element={<AuthPage />} />
+        <Route
+          path="/auth"
+          element={
+            isAuthenticated ? <Navigate to="/starter" replace /> : <AuthPage />
+          }
+        />
+
         <Route element={<ProtectedRoute />}>
           <Route path="/starter" element={<StarterPage />} />
           <Route path="/scanner" element={<ScannerPage />} />
         </Route>
-        <Route path="/" element={<Navigate to="/auth" replace />} />
-        <Route path="*" element={<Navigate to="/auth" replace />} />
+
+        <Route
+          path="/"
+          element={
+            <Navigate to={isAuthenticated ? "/starter" : "/auth"} replace />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? "/starter" : "/auth"} replace />
+          }
+        />
       </Routes>
     </Router>
   );
