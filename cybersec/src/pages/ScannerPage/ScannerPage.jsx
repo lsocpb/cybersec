@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -17,15 +17,17 @@ const ScannerPage = () => {
   const [scanning, setScanning] = useState(true);
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState(null);
+  const [questionOptions, setQuestionOptions] = useState([]);
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
   const [qrValue, setQrValue] = useState("");
+  const [scanId, setScanId] = useState("");
 
   const handleScan = async (decodedText) => {
-    if (!decodedText || loading) return;
+    console.log("entering handleScan");
 
-    console.log("QR code decoded:", decodedText);
+    if (!decodedText || loading) return;
 
     setScanning(false);
     setLoading(true);
@@ -40,11 +42,17 @@ const ScannerPage = () => {
         return;
       }
 
-      const authHeader = `Bearer ${token}`;
-      const response = await sessionScan(authHeader, decodedText);
+      const authHeader = `${token}`;
+      const response = await sessionScan(authHeader, decodedText[0].rawValue);
 
       if (response && response.question) {
-        setQuestion(response.question);
+        setQuestion(response.question.question_text);
+        if (response.question.options_array) {
+          setQuestionOptions(response.question.options_array.split(";"));
+        } else {
+          setQuestionOptions([]);
+        }
+        setScanId(response.scan_id);
       } else {
         throw new Error("Nieprawidłowa odpowiedź z serwera");
       }
@@ -84,19 +92,23 @@ const ScannerPage = () => {
         return;
       }
 
-      const authHeader = `Bearer ${token}`;
+      const authHeader = `${token}`;
 
-      const response = await sessionAnswer(authHeader, answer, qrValue);
+      const response = await sessionAnswer(authHeader, answer, scanId);
 
       if (response) {
-        setResult(response);
+        const formattedResult = {
+          correct: response.message === "Correct answer",
+          message: response.message || "",
+        };
+        setResult(formattedResult);
       } else {
         throw new Error("Nieprawidłowa odpowiedź z serwera");
       }
     } catch (err) {
-      console.error("Błąd podczas wysyłania odpowiedzi:", err);
       setError(
-        "Wystąpił błąd podczas przetwarzania odpowiedzi. Spróbuj ponownie."
+        err.response.data.detail ||
+          "Wystąpił błąd podczas wysyłania odpowiedzi. Spróbuj ponownie."
       );
     } finally {
       setLoading(false);
@@ -106,10 +118,12 @@ const ScannerPage = () => {
   const resetScanner = () => {
     setScanning(true);
     setQuestion(null);
+    setQuestionOptions([]);
     setAnswer("");
     setError("");
     setResult(null);
     setQrValue("");
+    setScanId("");
   };
 
   return (
@@ -130,7 +144,7 @@ const ScannerPage = () => {
               {scanning ? (
                 <div className="qr-scanner-container mb-4">
                   <Scanner
-                    onDecode={handleScan}
+                    onScan={handleScan}
                     onError={handleError}
                     constraints={{ facingMode: "environment" }}
                   />
@@ -146,17 +160,36 @@ const ScannerPage = () => {
                   </Alert>
 
                   <Form onSubmit={handleAnswerSubmit}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Twoja odpowiedź:</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        disabled={loading}
-                        required
-                      />
-                    </Form.Group>
+                    {questionOptions.length > 0 ? (
+                      <Form.Group className="mb-3">
+                        <Form.Label>Wybierz odpowiedź:</Form.Label>
+                        {questionOptions.map((option, index) => (
+                          <Form.Check
+                            key={index}
+                            type="radio"
+                            id={`option-${index}`}
+                            label={option}
+                            name="answerOption"
+                            value={option}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            disabled={loading}
+                            className="mb-2"
+                          />
+                        ))}
+                      </Form.Group>
+                    ) : (
+                      <Form.Group className="mb-3">
+                        <Form.Label>Twoja odpowiedź:</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          value={answer}
+                          onChange={(e) => setAnswer(e.target.value)}
+                          disabled={loading}
+                          required
+                        />
+                      </Form.Group>
+                    )}
 
                     <div className="d-flex justify-content-between">
                       <Button

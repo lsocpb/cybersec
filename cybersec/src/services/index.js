@@ -22,10 +22,13 @@ export const sessionScan = async (authorization, qrCode = "") => {
   return response.data;
 };
 
-export const sessionAnswer = async (authorization) => {
+export const sessionAnswer = async (authorization, answer, scanId) => {
   const response = await api.post(
     "/session/answer",
-    {},
+    {
+      scan_id: scanId,
+      answer: answer,
+    },
     {
       headers: {
         Authorization: authorization,
