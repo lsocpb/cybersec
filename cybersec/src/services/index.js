@@ -51,4 +51,5 @@ export default {
   sessionCreate,
   sessionScan,
   sessionAnswer,
+  sessionResults,
 };
