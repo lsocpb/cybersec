@@ -10,6 +10,10 @@ const StarterPage = () => {
     navigate("/scanner");
   };
 
+  const handleRulesClick = () => {
+    navigate("/rules");
+  };
+
   return (
     <div className="hero-section text-white position-relative">
       <div className="bg-overlay position-absolute w-full h-full"></div>
@@ -45,6 +49,7 @@ const StarterPage = () => {
               variant="outline-light"
               size="lg"
               className="px-5 py-3 fw-bold"
+              onClick={handleRulesClick}
             >
               Poznaj zasady
             </Button>

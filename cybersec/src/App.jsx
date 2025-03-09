@@ -11,6 +11,7 @@ import AuthPage from "./pages/AuthPage/AuthPage";
 import StarterPage from "./pages/StarterPage/StarterPage";
 import ScannerPage from "./pages/ScannerPage/ScannerPage";
 import { ProtectedRoute } from "@/Components";
+import RulesPage from "./pages/RulesPage/RulesPage";
 
 function App() {
   const isAuthenticated = localStorage.getItem("authToken") !== null;
@@ -29,6 +30,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/starter" element={<StarterPage />} />
           <Route path="/scanner" element={<ScannerPage />} />
+          <Route path="/rules" element={<RulesPage />} />
         </Route>
 
         <Route

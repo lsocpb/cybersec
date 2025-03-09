@@ -15,6 +15,7 @@ import {
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { sessionScan, sessionAnswer, sessionResults } from "@/services";
 import "./ScannerPage.css";
+import { useNavigate } from "react-router-dom";
 
 const UserStatsCard = ({ userStats, isLoading }) => {
   return (
@@ -132,6 +133,11 @@ const ScannerPage = () => {
   });
   const [userStats, setUserStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate("/");
+  };
 
   const loadUserStats = async () => {
     setStatsLoading(true);
@@ -280,7 +286,17 @@ const ScannerPage = () => {
   }, [toast]);
 
   return (
-    <Container className="scanner-page py-5">
+    <Container className="scanner-page py-5 position-relative">
+      <Button
+        variant="primary"
+        className="start-0 mb-4 rounded-circle shadow-sm d-flex justify-content-center align-items-center"
+        style={{ width: "45px", height: "45px", zIndex: 1030 }}
+        onClick={handleBackClick}
+        aria-label="Powrót"
+      >
+        <i className="bi bi-arrow-left fs-4"></i>
+      </Button>
+
       <ToastContainer
         position="top-end"
         className="p-3"
@@ -304,7 +320,6 @@ const ScannerPage = () => {
 
       <Row className="justify-content-center">
         <Col md={8} lg={6}>
-          {/* User Stats Card */}
           <UserStatsCard userStats={userStats} isLoading={statsLoading} />
 
           <Card className="shadow">
