@@ -43,9 +43,7 @@ const Authentication = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = "Email jest wymagany";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Niepoprawny format adresu email";
+      newErrors.email = "Pseudonim jest wymagany";
     }
 
     if (!formData.first_name) {
@@ -103,18 +101,18 @@ const Authentication = () => {
 
                 <Form onSubmit={handleSubmit}>
                   <Form.Group className="mb-4" controlId="formEmail">
-                    <Form.Label className="form-label">Adres email</Form.Label>
+                    <Form.Label className="form-label">Pseudonim</Form.Label>
                     <div className="input-group">
                       <span className="input-group-text">
-                        <i className="bi bi-envelope"></i>
+                        <i className="bi bi-person-circle"></i>
                       </span>
                       <Form.Control
-                        type="email"
+                        type="text"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         isInvalid={!!errors.email}
-                        placeholder="example@ex.pl"
+                        placeholder="Pseudonim"
                         className="form-control-lg"
                       />
                       <Form.Control.Feedback type="invalid">

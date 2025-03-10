@@ -20,31 +20,19 @@ function App() {
     <Router>
       <Header />
       <Routes>
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/starter" element={<StarterPage />} />
+        <Route path="/rules" element={<RulesPage />} />
         <Route
-          path="/auth"
+          path="/scanner"
           element={
-            isAuthenticated ? <Navigate to="/starter" replace /> : <AuthPage />
+            <ProtectedRoute>
+              <ScannerPage />
+            </ProtectedRoute>
           }
         />
-
-        <Route element={<ProtectedRoute />}>
-          <Route path="/starter" element={<StarterPage />} />
-          <Route path="/scanner" element={<ScannerPage />} />
-          <Route path="/rules" element={<RulesPage />} />
-        </Route>
-
-        <Route
-          path="/"
-          element={
-            <Navigate to={isAuthenticated ? "/starter" : "/auth"} replace />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/starter" : "/auth"} replace />
-          }
-        />
+        <Route path="/" element={<Navigate to="/starter" replace />} />
+        <Route path="*" element={<Navigate to="/starter" replace />} />
       </Routes>
     </Router>
   );
